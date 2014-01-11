@@ -76,3 +76,53 @@ var circles = function (data) {
 } (statesWithCount);
 
 
+var shareVisited = function (data) {
+  var width = 1000;
+  var height = width / 2;
+  var radius = Math.floor(height * 0.5);
+  
+  var yes = { val: "Yes", count: 0 };
+  var no = { val: "No", count: 0 };
+  
+  var visited = false;
+  for (var i = 0; i < states.length; i++) {
+    visited = false;
+    for (var t in trips) {
+      if(trips[t].states.indexOf(states[i].id) !== -1) {
+        visited = true;
+        break;
+      }
+    }
+    if(visited) { 
+      yes.count++; 
+    } else { 
+      no.count++;
+    }
+  }
+  var shares = [yes, no];
+  
+  var svg = d3.select("#share")
+    .attr("width", width)
+    .attr("height", height);
+  
+  var pieLayout = d3.layout.pie()
+    .value(function (d) { return d.count; });
+  
+  var arc = d3.svg.arc()
+    .outerRadius(radius - 5)
+    .innerRadius(0);
+  
+  var g = svg.selectAll("g")
+    .data(pieLayout(shares))
+    .enter().append("g")
+    //.attr("stroke", "#FFF")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");  
+  g.append("path")
+    .attr("d", arc)
+    .attr("fill", function (d) {
+      return d.data.val === "Yes" ? "#0F0" : "#F00";
+    });
+    g.append("text")
+   .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+   .text(function (d) { return d.data.val; });
+} (statesWithCount);
