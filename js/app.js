@@ -1,3 +1,7 @@
+/// <reference path="../libs/d3/d3.v3.js">
+/// <reference path="trips.js">
+
+
 var statesWithCount = function (states, trips) {
   var retVal = [];
 
